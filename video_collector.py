@@ -11,6 +11,7 @@ class VideoCollector:
         self.w, self.h, self.fps = (int(self.cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH,
                                                                    cv2.CAP_PROP_FRAME_HEIGHT,
                                                                    cv2.CAP_PROP_FPS))
+        self.video_current_time = video_start_time
 
     def get_cap(self):
         return self.cap  # Return video capture object for frame-by-frame processing
@@ -27,6 +28,13 @@ class VideoCollector:
     def get_starting_time(self):
         return self.video_start_time
 
-    def set_starting_time(self, interval_time=3):
-        self.video_start_time = self.video_start_time + datetime.timedelta(seconds=interval_time)
+    def set_current_time(self, interval_time=3):
+        self.video_current_time = self.video_current_time + datetime.timedelta(seconds=interval_time)
+
+    def set_start_to_current_time(self):
+        self.video_start_time = self.video_current_time
+
+    def get_current_time(self):
+        return self.video_current_time
+
 

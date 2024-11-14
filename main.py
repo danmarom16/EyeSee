@@ -8,14 +8,18 @@ from video_collector import VideoCollector
 import cv2
 
 
-# TODO: Solve the hours bug. It increases end time by 3, and start_time by 3, instead of doing their difference by 3. (can see in logs)
 def main():
-
     video_path = "resources/video.mp4"
 
     # Initialize collectors
     video_collector = VideoCollector(video_path)
-    video_analyzer = VideoAnalyzer(video_collector)
+
+    line_points = [(0, 400), (int(video_collector.get_width() - video_collector.get_width() / 3),
+                              video_collector.get_height())]
+
+    video_analyzer = VideoAnalyzer(video_collector, show=True, model="yolo11n.pt", colormap=cv2.COLORMAP_PARULA,
+                                   region=line_points, show_in=True, show_out=True)
+
     data_provider = DataProvider()  # Initialize DataProvider for database operations
     data_aggregator = DataAggregator(data_provider, video_collector)  # Save every 100 frames
 
@@ -25,8 +29,8 @@ def main():
         if not ret:
             break
         # Analyze frame and aggregate data
-        raw_processed_frame_data, heatmap_image = video_analyzer.analyze_video_frame(frame)
-        data_aggregator.add_frame_data(raw_processed_frame_data, heatmap_image)
+        raw_processed_frame_data, heatmap_image, dwell_times = video_analyzer.analyze_video_frame(frame)
+        data_aggregator.add_frame_data(raw_processed_frame_data, heatmap_image, dwell_times)
     cap.release()  # Release video after processing
 
 

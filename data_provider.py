@@ -41,3 +41,15 @@ class DataProvider:
                 data['end_time'],
                 data['counter'],
             ])
+
+        # Log dwell times to a separate text file if dwell_data is provided
+        if data["dwell"]:
+            dwell_log_path = "./logs/dwell_times.txt"
+            with open(dwell_log_path, "a") as dwell_log_file:
+                for track_id in data["dwell"].keys():
+                    duration = data["dwell"].get(track_id).get("dwell")
+                    exit_type = data["dwell"].get(track_id).get("exit_type")
+                    dwell_log_file.write(
+                        f"Track ID: {track_id}, Dwell Time: {duration} seconds, Exit Type: {exit_type}\n"
+                    )
+                dwell_log_file.write("--------------------------\n")

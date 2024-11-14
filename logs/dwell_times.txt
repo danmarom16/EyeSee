@@ -1,0 +1,16 @@
+Track ID: 67, Dwell Time: None seconds, Exit Type: None
+Track ID: 78, Dwell Time: None seconds, Exit Type: None
+--------------------------
+Track ID: 67, Dwell Time: None seconds, Exit Type: None
+Track ID: 78, Dwell Time: None seconds, Exit Type: None
+Track ID: 84, Dwell Time: None seconds, Exit Type: None
+--------------------------
+Track ID: 67, Dwell Time: None seconds, Exit Type: None
+Track ID: 78, Dwell Time: None seconds, Exit Type: None
+Track ID: 84, Dwell Time: None seconds, Exit Type: None
+--------------------------
+Track ID: 67, Dwell Time: None seconds, Exit Type: None
+Track ID: 78, Dwell Time: None seconds, Exit Type: None
+Track ID: 84, Dwell Time: None seconds, Exit Type: None
+Track ID: 125, Dwell Time: None seconds, Exit Type: None
+--------------------------
