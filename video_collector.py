@@ -28,11 +28,12 @@ class VideoCollector:
     def get_starting_time(self):
         return self.video_start_time
 
+    def increment_current_time(self):
+        time_increment = 1 / self.fps  # Duration of a single frame in seconds
+        self.video_current_time += datetime.timedelta(seconds=time_increment)
+
     def set_current_time(self, interval_time=3):
         self.video_current_time = self.video_current_time + datetime.timedelta(seconds=interval_time)
-
-    def set_start_to_current_time(self):
-        self.video_start_time = self.video_current_time
 
     def get_current_time(self):
         return self.video_current_time

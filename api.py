@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from data_provider import DataProvider
-from data_aggregator import DataAggregator
 from video_analyzer import VideoAnalyzer
 from video_collector import VideoCollector
 import cv2
@@ -9,7 +8,6 @@ import cv2
 # Initialize Flask app and database components
 app = Flask(__name__)
 data_provider = DataProvider()  # Initialize DataProvider for database operations
-data_aggregator = DataAggregator(data_provider=data_provider, save_interval=100)  # Save every 100 frames
 
 
 @app.route('/upload', methods=['POST'])
