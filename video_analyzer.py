@@ -7,7 +7,7 @@ import logging
 #TODO:Debug changes.
 
 logging.basicConfig(
-    filename='id_log.txt',  # Log file name
+    filename='./logs/id_log.txt',  # Log file name
     level=logging.INFO,  # Log level
     format='%(message)s'  # Log format
 )
