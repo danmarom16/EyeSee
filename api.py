@@ -1,36 +1,66 @@
 from flask import Flask, request, jsonify
-import os
+from cloudinary_service import CloudinaryService
+from data_provider import DataProvider
+from video_analyzer import VideoAnalyzer
+from video_collector import VideoCollector
+import cv2
 
+# Constants
+WEIGHTS_PATH = ['weights/yolo11n.pt', 'weights/cctv-age-classifier.pt', 'weights/cctv-gender-classifier.pt']
 
+# Initialize Flask app
 app = Flask(__name__)
-UPLOAD_FOLDER = "./uploaded_videos"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure folder exists
 
-@app.route('/upload_video', methods=['POST'])
-def upload_video():
+@app.route('/video/upload', methods=['POST'])
+def process_video():
     """
-    Endpoint to upload a video file for analysis.
-
-    Expects:
-        - 'file': The video file in the request payload.
-
-    Returns:
-        A JSON response indicating the status of the upload.
+    Endpoint to process a video.
+    Expects a JSON payload with the video path.
     """
     try:
-        # Check if the request has a file
-        if 'file' not in request.files:
-            return jsonify({"status": "error", "message": "No file provided"}), 400
+        data = request.json
+        data_provider = DataProvider(CloudinaryService(), VideoCollector())
+        video_cap = data_provider.download_video(data["url"])
+        data_provider.populate_video_data(video_cap, data)
 
-        video_file = request.files['file']
+        height = int(data_provider.video_collector.get_height()) - int(data_provider.video_collector.get_height() / 3)
+        line_points = [(int(data_provider.video_collector.get_width()), height),
+                       (int(data_provider.video_collector.get_start_x()), height)]
 
-        # Save the uploaded video
-        video_path = os.path.join(UPLOAD_FOLDER, video_file.filename)
-        video_file.save(video_path)
+        video_analyzer = VideoAnalyzer(data_provider.video_collector, WEIGHTS_PATH[1], WEIGHTS_PATH[2], data_provider,
+                                       show=False, model=WEIGHTS_PATH[0], colormap=cv2.COLORMAP_PARULA,
+                                       region=line_points, show_in=True, show_out=True)
 
-        # Trigger analysis (pseudo-function, replace with your analysis logic)
-        #perform_analysis(video_path)
+        # Process the video
+        cap = data_provider.video_collector.get_cap()
+        ret, frame = cap.read()
+        heatmap_image = None
+        prev_heatmap_image = None
 
-        return jsonify({"status": "success", "message": "Video uploaded and analysis started"}), 200
+        if ret:
+            video_analyzer.initialize(frame)
+
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                data_provider.provide(prev_heatmap_image)
+                break
+
+            # Analyze frame and aggregate data
+            prev_heatmap_image = heatmap_image
+            heatmap_image = video_analyzer.analyze_video_frame(frame)
+            video_analyzer.video_writer.write(heatmap_image)
+
+        # Release resources
+        cap.release()
+        video_analyzer.video_writer.release()
+
+        return jsonify({'message': 'Video processing complete'}), 200
+
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        print(e)
+        return jsonify({'error': str(e)}), 500
+
+
+if __name__ == '__main__':
+    app.run(port=5000)

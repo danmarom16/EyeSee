@@ -3,15 +3,32 @@ import cv2
 
 
 class VideoCollector:
-    def __init__(self, video_path, video_start_time=datetime.datetime.now()):
-        self.video_path = video_path
-        self.cap = cv2.VideoCapture(self.video_path)
-        self.video_start_time = video_start_time
-        # width, height, fsp
+    def __init__(self):
+        self.current_time = None
+        self.fps = None
+        self.h = None
+        self.w = None
+        self.date = None
+        self.start_time = None
+        self.end_time = None
+        self.length = None
+        self.cap = None
+        self.jobId = None
+
+    def populate_video_data(self, video_cap, data):
+        self.cap = video_cap
+        self.date = data["date"]
+        self.start_time = data["start"]
+        self.end_time = data["end"]
+        self.length = data["length"]
+        self.current_time = data["start"]
+        self.jobId = data["jobId"]
         self.w, self.h, self.fps = (int(self.cap.get(x)) for x in (cv2.CAP_PROP_FRAME_WIDTH,
                                                                    cv2.CAP_PROP_FRAME_HEIGHT,
                                                                    cv2.CAP_PROP_FPS))
-        self.video_current_time = video_start_time
+
+    def get_end_time(self):
+        return self.end_time
 
     def get_cap(self):
         return self.cap  # Return video capture object for frame-by-frame processing
@@ -25,8 +42,8 @@ class VideoCollector:
     def get_fps(self):
         return self.fps
 
-    def get_starting_time(self):
-        return self.video_start_time
+    def get_start_time(self):
+        return self.start_time
 
     def increment_current_time(self):
         time_increment = 1 / self.fps  # Duration of a single frame in seconds
@@ -43,3 +60,4 @@ class VideoCollector:
 
     def get_start_y(self):
         return 0
+

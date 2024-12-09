@@ -1259,3 +1259,488 @@ ID: 222 Clean Enter
 ID: 222 Removed from dirty list
 ID: 222 Clean Exit
 ID: 264 Dirty Entrance
+ID: 1 Clean Enter
+ID: 2 Clean Enter
+ID: 3 Clean Enter
+ID: 4 Clean Enter
+ID: 5 Clean Enter
+ID: 6 Clean Enter
+ID: 7 Clean Enter
+ID: 8 Clean Enter
+ID: 9 Clean Enter
+ID: 10 Clean Enter
+ID: 11 Clean Enter
+ID: 12 Clean Enter
+ID: 13 Clean Enter
+ID: 14 Clean Enter
+ID: 15 Clean Enter
+ID: 16 Clean Enter
+ID: 17 Clean Enter
+ID: 1 Clean Enter
+ID: 2 Clean Enter
+ID: 3 Clean Enter
+ID: 4 Clean Enter
+ID: 5 Clean Enter
+ID: 6 Clean Enter
+ID: 7 Clean Enter
+ID: 8 Clean Enter
+ID: 9 Clean Enter
+ID: 10 Clean Enter
+ID: 11 Clean Enter
+ID: 1 Clean Enter
+ID: 2 Clean Enter
+ID: 3 Clean Enter
+ID: 4 Clean Enter
+ID: 5 Clean Enter
+ID: 6 Clean Enter
+ID: 7 Clean Enter
+ID: 8 Clean Enter
+ID: 9 Clean Enter
+ID: 10 Clean Enter
+ID: 11 Clean Enter
+ID: 12 Clean Enter
+ID: 13 Clean Enter
+ID: 14 Clean Enter
+ID: 15 Clean Enter
+ID: 16 Clean Enter
+ID: 17 Clean Enter
+ID: 2 Clean Exit
+ID: 24 Dirty Entrance
+ID: 20 Clean Enter
+ID: 31 Dirty Entrance
+ID: 16 was counted and performed Dirty Exit
+ID: 37 Dirty Entrance
+ID: 42 Dirty Entrance
+ID: 48 Dirty Entrance
+ID: 59 Dirty Entrance
+ID: 60 Dirty Entrance
+ID: 63 Dirty Entrance
+ID: 66 Dirty Entrance
+ID: 9 Clean Exit
+ID: 71 Dirty Entrance
+ID: 4 Clean Exit
+ID: 74 Dirty Entrance
+ID: 10 was counted and performed Dirty Exit
+ID: 12 was counted and performed Dirty Exit
+ID: 77 Dirty Entrance
+ID: 79 Dirty Entrance
+ID: 81 Dirty Entrance
+ID: 83 Dirty Entrance
+ID: 11 was counted and performed Dirty Exit
+ID: 7 Clean Exit
+ID: 87 Dirty Entrance
+ID: 5 was counted and performed Dirty Exit
+ID: 93 Dirty Entrance
+ID: 95 Dirty Entrance
+ID: 66 Clean Enter
+ID: 66 Removed from dirty list
+ID: 77 Clean Enter
+ID: 77 Removed from dirty list
+ID: 106 Dirty Entrance
+ID: 83 Clean Enter
+ID: 83 Removed from dirty list
+ID: 83 Clean Exit
+ID: 79 Clean Enter
+ID: 79 Removed from dirty list
+ID: 79 Clean Exit
+ID: 13 Clean Exit
+ID: 111 Dirty Entrance
+ID: 114 Dirty Entrance
+ID: 115 Dirty Entrance
+ID: 116 Dirty Entrance
+ID: 6 was counted and performed Dirty Exit
+ID: 14 Clean Exit
+ID: 120 Dirty Entrance
+ID: 8 was counted and performed Dirty Exit
+ID: 60 Clean Enter
+ID: 60 Removed from dirty list
+ID: 60 Clean Exit
+ID: 127 Dirty Entrance
+ID: 17 was counted and performed Dirty Exit
+ID: 145 Dirty Entrance
+ID: 150 Dirty Entrance
+ID: 3 was counted and performed Dirty Exit
+ID: 120 Clean Enter
+ID: 120 Removed from dirty list
+ID: 161 Dirty Entrance
+ID: 163 Dirty Entrance
+ID: 167 Dirty Entrance
+ID: 170 Dirty Entrance
+ID: 207 Dirty Entrance
+ID: 209 Dirty Entrance
+ID: 1 was counted and performed Dirty Exit
+ID: 214 Dirty Entrance
+ID: 215 Dirty Entrance
+ID: 20 was counted and performed Dirty Exit
+ID: 222 Dirty Entrance
+ID: 161 Clean Enter
+ID: 161 Removed from dirty list
+ID: 170 Clean Enter
+ID: 170 Removed from dirty list
+ID: 238 Dirty Entrance
+ID: 240 Dirty Entrance
+ID: 252 Clean Enter
+ID: 256 Clean Enter
+ID: 259 Dirty Entrance
+ID: 252 was counted and performed Dirty Exit
+ID: 261 Dirty Entrance
+ID: 256 was counted and performed Dirty Exit
+ID: 222 Clean Enter
+ID: 222 Removed from dirty list
+ID: 222 Clean Exit
+ID: 264 Dirty Entrance
+ID: 1 Clean Enter
+ID: 2 Clean Enter
+ID: 3 Clean Enter
+ID: 4 Clean Enter
+ID: 5 Clean Enter
+ID: 6 Clean Enter
+ID: 7 Clean Enter
+ID: 8 Clean Enter
+ID: 9 Clean Enter
+ID: 10 Clean Enter
+ID: 11 Clean Enter
+ID: 12 Clean Enter
+ID: 13 Clean Enter
+ID: 14 Clean Enter
+ID: 15 Clean Enter
+ID: 16 Clean Enter
+ID: 17 Clean Enter
+ID: 2 Clean Exit
+ID: 24 Dirty Entrance
+ID: 20 Clean Enter
+ID: 31 Dirty Entrance
+ID: 16 was counted and performed Dirty Exit
+ID: 37 Dirty Entrance
+ID: 42 Dirty Entrance
+ID: 48 Dirty Entrance
+ID: 59 Dirty Entrance
+ID: 60 Dirty Entrance
+ID: 63 Dirty Entrance
+ID: 66 Dirty Entrance
+ID: 9 Clean Exit
+ID: 71 Dirty Entrance
+ID: 4 Clean Exit
+ID: 74 Dirty Entrance
+ID: 10 was counted and performed Dirty Exit
+ID: 12 was counted and performed Dirty Exit
+ID: 77 Dirty Entrance
+ID: 79 Dirty Entrance
+ID: 81 Dirty Entrance
+ID: 83 Dirty Entrance
+ID: 11 was counted and performed Dirty Exit
+ID: 7 Clean Exit
+ID: 87 Dirty Entrance
+ID: 5 was counted and performed Dirty Exit
+ID: 93 Dirty Entrance
+ID: 95 Dirty Entrance
+ID: 66 Clean Enter
+ID: 66 Removed from dirty list
+ID: 77 Clean Enter
+ID: 77 Removed from dirty list
+ID: 106 Dirty Entrance
+ID: 83 Clean Enter
+ID: 83 Removed from dirty list
+ID: 83 Clean Exit
+ID: 79 Clean Enter
+ID: 79 Removed from dirty list
+ID: 79 Clean Exit
+ID: 13 Clean Exit
+ID: 111 Dirty Entrance
+ID: 114 Dirty Entrance
+ID: 115 Dirty Entrance
+ID: 116 Dirty Entrance
+ID: 6 was counted and performed Dirty Exit
+ID: 14 Clean Exit
+ID: 120 Dirty Entrance
+ID: 8 was counted and performed Dirty Exit
+ID: 60 Clean Enter
+ID: 60 Removed from dirty list
+ID: 60 Clean Exit
+ID: 127 Dirty Entrance
+ID: 17 was counted and performed Dirty Exit
+ID: 145 Dirty Entrance
+ID: 150 Dirty Entrance
+ID: 3 was counted and performed Dirty Exit
+ID: 120 Clean Enter
+ID: 120 Removed from dirty list
+ID: 161 Dirty Entrance
+ID: 163 Dirty Entrance
+ID: 167 Dirty Entrance
+ID: 170 Dirty Entrance
+ID: 207 Dirty Entrance
+ID: 209 Dirty Entrance
+ID: 1 was counted and performed Dirty Exit
+ID: 214 Dirty Entrance
+ID: 215 Dirty Entrance
+ID: 20 was counted and performed Dirty Exit
+ID: 222 Dirty Entrance
+ID: 161 Clean Enter
+ID: 161 Removed from dirty list
+ID: 170 Clean Enter
+ID: 170 Removed from dirty list
+ID: 238 Dirty Entrance
+ID: 240 Dirty Entrance
+ID: 252 Clean Enter
+ID: 256 Clean Enter
+ID: 259 Dirty Entrance
+ID: 252 was counted and performed Dirty Exit
+ID: 261 Dirty Entrance
+ID: 256 was counted and performed Dirty Exit
+ID: 222 Clean Enter
+ID: 222 Removed from dirty list
+ID: 222 Clean Exit
+ID: 264 Dirty Entrance
+ID: 1 Clean Enter
+ID: 2 Clean Enter
+ID: 3 Clean Enter
+ID: 4 Clean Enter
+ID: 5 Clean Enter
+ID: 6 Clean Enter
+ID: 7 Clean Enter
+ID: 8 Clean Enter
+ID: 9 Clean Enter
+ID: 10 Clean Enter
+ID: 11 Clean Enter
+ID: 12 Clean Enter
+ID: 13 Clean Enter
+ID: 14 Clean Enter
+ID: 15 Clean Enter
+ID: 16 Clean Enter
+ID: 17 Clean Enter
+ID: 2 Clean Exit
+ID: 24 Dirty Entrance
+ID: 20 Clean Enter
+ID: 31 Dirty Entrance
+ID: 16 was counted and performed Dirty Exit
+ID: 37 Dirty Entrance
+ID: 42 Dirty Entrance
+ID: 48 Dirty Entrance
+ID: 59 Dirty Entrance
+ID: 60 Dirty Entrance
+ID: 63 Dirty Entrance
+ID: 66 Dirty Entrance
+ID: 9 Clean Exit
+ID: 71 Dirty Entrance
+ID: 4 Clean Exit
+ID: 74 Dirty Entrance
+ID: 10 was counted and performed Dirty Exit
+ID: 12 was counted and performed Dirty Exit
+ID: 77 Dirty Entrance
+ID: 79 Dirty Entrance
+ID: 81 Dirty Entrance
+ID: 83 Dirty Entrance
+ID: 11 was counted and performed Dirty Exit
+ID: 7 Clean Exit
+ID: 87 Dirty Entrance
+ID: 5 was counted and performed Dirty Exit
+ID: 93 Dirty Entrance
+ID: 95 Dirty Entrance
+ID: 66 Clean Enter
+ID: 66 Removed from dirty list
+ID: 77 Clean Enter
+ID: 77 Removed from dirty list
+ID: 106 Dirty Entrance
+ID: 83 Clean Enter
+ID: 83 Removed from dirty list
+ID: 83 Clean Exit
+ID: 79 Clean Enter
+ID: 79 Removed from dirty list
+ID: 79 Clean Exit
+ID: 13 Clean Exit
+ID: 111 Dirty Entrance
+ID: 114 Dirty Entrance
+ID: 115 Dirty Entrance
+ID: 116 Dirty Entrance
+ID: 6 was counted and performed Dirty Exit
+ID: 14 Clean Exit
+ID: 120 Dirty Entrance
+ID: 8 was counted and performed Dirty Exit
+ID: 60 Clean Enter
+ID: 60 Removed from dirty list
+ID: 60 Clean Exit
+ID: 127 Dirty Entrance
+ID: 17 was counted and performed Dirty Exit
+ID: 145 Dirty Entrance
+ID: 150 Dirty Entrance
+ID: 3 was counted and performed Dirty Exit
+ID: 120 Clean Enter
+ID: 120 Removed from dirty list
+ID: 161 Dirty Entrance
+ID: 163 Dirty Entrance
+ID: 167 Dirty Entrance
+ID: 170 Dirty Entrance
+ID: 207 Dirty Entrance
+ID: 209 Dirty Entrance
+ID: 1 was counted and performed Dirty Exit
+ID: 214 Dirty Entrance
+ID: 215 Dirty Entrance
+ID: 20 was counted and performed Dirty Exit
+ID: 222 Dirty Entrance
+ID: 161 Clean Enter
+ID: 161 Removed from dirty list
+ID: 170 Clean Enter
+ID: 170 Removed from dirty list
+ID: 238 Dirty Entrance
+ID: 240 Dirty Entrance
+ID: 252 Clean Enter
+ID: 256 Clean Enter
+ID: 259 Dirty Entrance
+ID: 252 was counted and performed Dirty Exit
+ID: 261 Dirty Entrance
+ID: 256 was counted and performed Dirty Exit
+ID: 222 Clean Enter
+ID: 222 Removed from dirty list
+ID: 222 Clean Exit
+ID: 264 Dirty Entrance
+ID: 1 Clean Enter
+ID: 2 Clean Enter
+ID: 3 Clean Enter
+ID: 4 Clean Enter
+ID: 5 Clean Enter
+ID: 6 Clean Enter
+ID: 7 Clean Enter
+ID: 8 Clean Enter
+ID: 9 Clean Enter
+ID: 10 Clean Enter
+ID: 11 Clean Enter
+ID: 12 Clean Enter
+ID: 13 Clean Enter
+ID: 14 Clean Enter
+ID: 15 Clean Enter
+ID: 16 Clean Enter
+ID: 17 Clean Enter
+ID: 2 Clean Exit
+ID: 24 Dirty Entrance
+ID: 20 Clean Enter
+ID: 31 Dirty Entrance
+ID: 16 was counted and performed Dirty Exit
+ID: 37 Dirty Entrance
+ID: 42 Dirty Entrance
+ID: 48 Dirty Entrance
+ID: 59 Dirty Entrance
+ID: 60 Dirty Entrance
+ID: 63 Dirty Entrance
+ID: 66 Dirty Entrance
+ID: 9 Clean Exit
+ID: 71 Dirty Entrance
+ID: 4 Clean Exit
+ID: 74 Dirty Entrance
+ID: 10 was counted and performed Dirty Exit
+ID: 12 was counted and performed Dirty Exit
+ID: 77 Dirty Entrance
+ID: 79 Dirty Entrance
+ID: 81 Dirty Entrance
+ID: 83 Dirty Entrance
+ID: 11 was counted and performed Dirty Exit
+ID: 7 Clean Exit
+ID: 87 Dirty Entrance
+ID: 5 was counted and performed Dirty Exit
+ID: 93 Dirty Entrance
+ID: 95 Dirty Entrance
+ID: 66 Clean Enter
+ID: 66 Removed from dirty list
+ID: 77 Clean Enter
+ID: 77 Removed from dirty list
+ID: 106 Dirty Entrance
+ID: 83 Clean Enter
+ID: 83 Removed from dirty list
+ID: 83 Clean Exit
+ID: 79 Clean Enter
+ID: 79 Removed from dirty list
+ID: 79 Clean Exit
+ID: 13 Clean Exit
+ID: 111 Dirty Entrance
+ID: 114 Dirty Entrance
+ID: 115 Dirty Entrance
+ID: 116 Dirty Entrance
+ID: 6 was counted and performed Dirty Exit
+ID: 14 Clean Exit
+ID: 120 Dirty Entrance
+ID: 8 was counted and performed Dirty Exit
+ID: 60 Clean Enter
+ID: 60 Removed from dirty list
+ID: 60 Clean Exit
+ID: 127 Dirty Entrance
+ID: 17 was counted and performed Dirty Exit
+ID: 145 Dirty Entrance
+ID: 150 Dirty Entrance
+ID: 3 was counted and performed Dirty Exit
+ID: 120 Clean Enter
+ID: 120 Removed from dirty list
+ID: 161 Dirty Entrance
+ID: 163 Dirty Entrance
+ID: 167 Dirty Entrance
+ID: 170 Dirty Entrance
+ID: 207 Dirty Entrance
+ID: 209 Dirty Entrance
+ID: 1 was counted and performed Dirty Exit
+ID: 214 Dirty Entrance
+ID: 215 Dirty Entrance
+ID: 20 was counted and performed Dirty Exit
+ID: 222 Dirty Entrance
+ID: 161 Clean Enter
+ID: 161 Removed from dirty list
+ID: 170 Clean Enter
+ID: 170 Removed from dirty list
+ID: 238 Dirty Entrance
+ID: 240 Dirty Entrance
+ID: 252 Clean Enter
+ID: 256 Clean Enter
+ID: 259 Dirty Entrance
+ID: 252 was counted and performed Dirty Exit
+ID: 261 Dirty Entrance
+ID: 256 was counted and performed Dirty Exit
+ID: 222 Clean Enter
+ID: 222 Removed from dirty list
+ID: 222 Clean Exit
+ID: 264 Dirty Entrance
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [09/Dec/2024 17:29:06] "[35m[1mPOST /video/upload HTTP/1.1[0m" 500 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [09/Dec/2024 17:31:33] "[35m[1mPOST /video/upload HTTP/1.1[0m" 500 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [09/Dec/2024 17:32:48] "[35m[1mPOST /video/upload HTTP/1.1[0m" 500 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [09/Dec/2024 17:33:38] "[35m[1mPOST /video/upload HTTP/1.1[0m" 500 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [09/Dec/2024 17:40:08] "[35m[1mPOST /video/upload HTTP/1.1[0m" 500 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [09/Dec/2024 17:47:45] "[35m[1mPOST /video/upload HTTP/1.1[0m" 500 -
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [09/Dec/2024 17:56:49] "[35m[1mPOST /video/upload HTTP/1.1[0m" 500 -

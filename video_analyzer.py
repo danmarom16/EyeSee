@@ -225,6 +225,9 @@ class VideoAnalyzer(Heatmap):
     def analyze_video_frame(self, im0):
         # Create a copy of the original frame for classification tasks
         original_frame = im0.copy()
+        if self.i == 0:
+            self.start_time = self.video_collector.get_current_time()
+
         self.i += 1
         # Initialize heatmap if not already done
         if not self.initialized:

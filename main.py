@@ -1,9 +1,9 @@
-
+from cloudinary_service import CloudinaryService
 from data_provider import DataProvider
 from video_analyzer import VideoAnalyzer
 from video_collector import VideoCollector
 import cv2
-
+from cloudinary_service import CloudinaryService
 WEIGHTS_PATH = ['weights/yolo11n.pt', 'weights/cctv-age-classifier.pt', 'weights/cctv-gender-classifier.pt']
 def main():
 
@@ -13,7 +13,8 @@ def main():
     height = int(video_collector.get_height()) - int(video_collector.get_height()/3)
     line_points = [(int(video_collector.get_width()), height),
                    (int(video_collector.get_start_x()), height)]
-    data_provider = DataProvider(video_collector)  # Initialize DataProvider for database operations
+    cloudinary_service = CloudinaryService()
+    data_provider = DataProvider(video_collector, cloudinary_service)  # Initialize DataProvider for database operations
     video_analyzer = VideoAnalyzer(video_collector, WEIGHTS_PATH[1], WEIGHTS_PATH[2], data_provider, show=True, model=WEIGHTS_PATH[0], colormap=cv2.COLORMAP_PARULA,
                                    region=line_points, show_in=True, show_out=True)
 
