@@ -38,4 +38,8 @@ class VideoCollector:
     def get_current_time(self):
         return self.video_current_time
 
+    def get_start_x(self):
+        return 0
 
+    def get_start_y(self):
+        return 0

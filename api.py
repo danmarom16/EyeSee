@@ -1,47 +1,36 @@
 from flask import Flask, request, jsonify
-from data_provider import DataProvider
-from video_analyzer import VideoAnalyzer
-from video_collector import VideoCollector
-import cv2
+import os
 
 
-# Initialize Flask app and database components
 app = Flask(__name__)
-data_provider = DataProvider()  # Initialize DataProvider for database operations
+UPLOAD_FOLDER = "./uploaded_videos"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure folder exists
 
+@app.route('/upload_video', methods=['POST'])
+def upload_video():
+    """
+    Endpoint to upload a video file for analysis.
 
-@app.route('/upload', methods=['POST'])
-def upload_data():
+    Expects:
+        - 'file': The video file in the request payload.
 
-    video_path = request.form.get('video_path')
-    #video_path = "resources/video.mp4"
-    # Initialize collectors
-    video_collector = VideoCollector(video_path)
+    Returns:
+        A JSON response indicating the status of the upload.
+    """
+    try:
+        # Check if the request has a file
+        if 'file' not in request.files:
+            return jsonify({"status": "error", "message": "No file provided"}), 400
 
-    # Analyze video frame by frame
-    video_capture = video_collector.collect_video()
-    video_analyzer = VideoAnalyzer()
+        video_file = request.files['file']
 
-    while video_capture.isOpened():
-        ret, frame = video_capture.read()
-        if not ret:
-            break
-        # Analyze frame and aggregate data
-        frame_data = video_analyzer.analyze_video_frame(frame)
-        data_aggregator.add_frame_data(frame_data)
-    video_capture.release()  # Release video after processing
+        # Save the uploaded video
+        video_path = os.path.join(UPLOAD_FOLDER, video_file.filename)
+        video_file.save(video_path)
 
-    # Generate final summary and return it
-    summary = data_aggregator.get_summary()
-    return jsonify({"status": "success", "summary": summary})
+        # Trigger analysis (pseudo-function, replace with your analysis logic)
+        #perform_analysis(video_path)
 
-
-@app.route('/data', methods=['GET'])
-def get_data():
-    # Return the current aggregated summary data
-    summary = data_aggregator.get_summary()
-    return jsonify(summary)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+        return jsonify({"status": "success", "message": "Video uploaded and analysis started"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
