@@ -138,11 +138,18 @@ class DataProvider:
         pil_image.save(image_path, "PNG", pnginfo=metadata)
 
     def provide_metrics1(self,url):
-        if not os.path.exists(self.file_path):
-            with open(self.file_path, mode='w', newline='') as file:
-                writer = csv.writer(file)
-                for report in self.reports:
-                    writer.writerow(report)
+        with open(self.file_path, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            for report in self.reports:
+                writer.writerow([
+                    report["date"],
+                    report["timeSlice"],
+                    report["totalCustomers"],
+                    report["totalMaleCustomers"],
+                    report["totalFemaleCustomers"],
+                    report["avgDwellTime"],
+                    report["customersByAge"]
+                ])
     def provide(self, last_frame):
         end_time = self.video_collector.get_current_time()
         self.provide_metrics1(SERVER_URL + REPORT_ENDPOINT)
