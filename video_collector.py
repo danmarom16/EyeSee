@@ -60,3 +60,5 @@ class VideoCollector:
     def get_start_y(self):
         return 0
 
+    def get_job_id(self):
+        return self.jobId

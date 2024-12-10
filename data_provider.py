@@ -7,9 +7,9 @@ import cv2
 import numpy as np
 from datetime import datetime
 
-SERVER_URL = 'http://127.0.0.1:5000'
+SERVER_URL = 'http://127.0.0.1:4000'
 HEATMAP_ENDPOINT = '/heatmap'
-REPORT_ENDPOINT = '/create/report'
+REPORT_ENDPOINT = '/report/create'
 HEATMAP_ADD = '/heatmap/add'
 
 class DataProvider:
@@ -115,8 +115,8 @@ class DataProvider:
     def provide_metrics(self, url):
         #For debugging
         self.export_to_local_csv()
-
-        data = self.reports
+        self.export_to_local_txt()
+        data = {"reports":self.reports, "jobId":self.video_collector.get_job_id()}
         response = requests.post(url, json=data)
         if response.status_code == 200:
             print("Successfully saved data")
@@ -159,6 +159,21 @@ class DataProvider:
                     report["avgDwellTime"],
                     report["customersByAge"]
                 ])
+
+    def export_to_local_txt(self):
+        with open(self.file_path + ".txt", mode='a', encoding='utf-8') as file:
+            for report in self.reports:
+                line = "\t".join([
+                    str(report["date"]),
+                    str(report["timeSlice"]),
+                    str(report["totalCustomers"]),
+                    str(report["totalMaleCustomers"]),
+                    str(report["totalFemaleCustomers"]),
+                    str(report["avgDwellTime"]),
+                    str(report["customersByAge"])
+                ])
+                file.write(line + "\n")
+
     def provide(self, last_frame):
         end_time = self.video_collector.get_current_time()
         self.provide_metrics(SERVER_URL + REPORT_ENDPOINT)
