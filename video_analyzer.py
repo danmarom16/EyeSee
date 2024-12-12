@@ -283,6 +283,7 @@ class VideoAnalyzer(Heatmap):
 
         # Update previous track IDs and display the output
         self.prev_track_ids = self.counted_ids.copy()
+
         self.display_output(im0)
 
         # Increment the current time of the video collector
@@ -319,7 +320,6 @@ class VideoAnalyzer(Heatmap):
             if self.region is not None:
                 self.annotator.draw_region(reg_pts=self.region, color=(104, 9, 123), thickness=self.line_width * 2)
             self.count_in_and_analyze(track_id, cls, box, original_frame)
-
 
         if self.region is not None:
             self.display_counts(im0)
