@@ -4,7 +4,7 @@ from video_analyzer1 import VideoAnalyzer
 from util1 import WeightsPath
 from video_manager import VideoManager
 import cv2
-
+from util1 import WeightsPath
 
 class ComputerVisionService:
     def __init__(self, data):
@@ -26,7 +26,7 @@ class ComputerVisionService:
                        (int(self.video_manager.get_start_x()), height)]
 
         # Set video analyzer
-        self.video_analyzer = VideoAnalyzer(self.data_provider, self.video_manager, line_points)
-
+        self.video_analyzer = VideoAnalyzer(self.data_provider, self.video_manager, line_points,
+                                            model=WeightsPath.PERSON_TRACKER, classes=[0])
 
         self.video_analyzer.analyze()

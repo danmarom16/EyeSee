@@ -24,7 +24,7 @@ class VideoAnalyzer:
 
         # Custom classes for analysis logic.
         self.object_tracker = ObjectTracker(ObjectCounter(line_points, self.model, self.video_manager),
-                                            self.video_manager, self.model)
+                                            self.video_manager, self.model, self.CFG)
         self.frame_analyzer = FrameAnalyzer(self.object_tracker, self.CFG, self.heatmap_manager)
 
         self.video_writer = init_writer("./logs/outputs/output.mp4", video_manager)
@@ -34,9 +34,7 @@ class VideoAnalyzer:
 
         # Initialize heatmap
         self.heatmap_manager.initialize_heatmap(first_frame.copy())
-
         self.frame_analyzer.initialize(first_frame)
-
 
     def analyze(self):
         cap = self.video_manager.get_cap()

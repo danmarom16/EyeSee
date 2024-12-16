@@ -32,10 +32,37 @@ class WeightsPath(Enum):
     GENDER_CLASSIFIER = 'weights/cctv-gender-classifier.pt'
 
 
+class CountType(Enum):
+    DIRTY_IN = "DIRTY_IN"
+    DIRTY_OUT = "DIRTY_OUT"
+    CLEAN_IN = "CLEAN_IN"
+    CLEAN_OUT = "CLEAN_OUT"
+
+
+class PastCustomer(Enum):
+    TRACK_ID = "track_id"
+    DWELL = "dwell"
+    AGE = "age"
+    GENDER = "gender"
+
+
+class DwellTime(Enum):
+    ENTRANCE = "entrance"
+    EXIT = "exit"
+    DWELL = "dwell"
+    ENTRANCE_TYPE = "entrance_type"
+    EXIT_TYPE = "exit_type"
+
+class ClassifierType(Enum):
+    AGE = "age"
+    GENDER = "gender"
+
+
 # CONSTANTS
 REEVALUATION_INTERVAL = 5  # Frames interval for re-evaluating predictions.
 LOW_CONF = 0.75  # Confidence threshold for predictions.
 SAVING_INTERVAL = 5  # Number of frames between saving data.
+NOT_DETECTED = "Not Detected"
 
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)

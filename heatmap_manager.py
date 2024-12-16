@@ -5,6 +5,7 @@ class HeatmapManager:
 
     def __init__(self, CFG):
         self.heatmap = None
+        self.CFG = CFG
         self.initialized = False
         self.colormap = cv2.COLORMAP_PARULA if self.CFG["colormap"] is None else self.CFG["colormap"]
     def initialize_heatmap(self, frame):

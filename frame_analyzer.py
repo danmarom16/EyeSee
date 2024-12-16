@@ -2,7 +2,7 @@ from shapely.geometry import LineString
 from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_SOL_DICT, LOGGER
 from ultralytics.utils.plotting import Annotator
 from shapely.geometry import LineString
-from util1 import annotate_object, RED, BLUE, PURPLE, REEVALUATION_INTERVAL
+from util1 import annotate_object, RED, BLUE, PURPLE, REEVALUATION_INTERVAL, ClassifierType
 
 class FrameAnalyzer:
 
@@ -21,6 +21,7 @@ class FrameAnalyzer:
 
 
     def initialize(self, im0):
+        LOGGER.info("Initializing frame analyzer")
         original_frame = im0.copy()
 
         # Extract tracks
@@ -28,8 +29,8 @@ class FrameAnalyzer:
 
         self.annotator = Annotator(im0, line_width=self.line_width)
 
-        for box, track_id, cls in zip(self.object_tracker.boxes, self.object_tracker.track_ids,
-                                      self.object_tracker.clss):
+        for box, track_id, cls in zip(self.object_tracker.get_boxes(), self.object_tracker.get_track_ids(),
+                                      self.object_tracker.get_classes()):
             self.heatmap_manager.apply_heatmap_effect(box)
             self.object_tracker.store_tracking_history(track_id, box)
 
@@ -37,17 +38,20 @@ class FrameAnalyzer:
             if self.region is not None:
                 self.annotator.draw_region(reg_pts=self.region, color=PURPLE, thickness=self.line_width * 2)
 
-            # Count the object in as all objects detected in the  first frame are counted as clients.
+            # Skipping analysis as all objects detected in the first frame are counted as clients, therefore we need
+            # to count and classify them as they are considered clients already, regardless if they crossed the entrance
+            # line or not.
             self.object_tracker.count_in(track_id, cls, box)
+            self.object_tracker.classify(original_frame, track_id, box)
 
             annotate_object(track_id, cls, box,
-                            self.object_tracker.age_classifier.data.get(track_id, "Not Detected"),
-                            self.object_tracker.age_classifier.data.get(track_id, "Not Detected"), self.annotator,
-                            RED)
+                            self.object_tracker.get_track_id_classifier_data(track_id, ClassifierType.AGE),
+                            self.object_tracker.get_track_id_classifier_data(track_id, ClassifierType.GENDER),
+                            self.annotator, RED)
 
             # Display counts on the frame if a region is defined
             if self.region is not None:
-                self.object_tracker.display_countes(self, im0, self.annotator)
+                self.object_tracker.display_counts(self, im0, self.annotator)
 
             if self.object_tracker.data.id is not None:
                 im0 = self.heatmap_manager.normalize_heatmap(im0)
@@ -79,17 +83,21 @@ class FrameAnalyzer:
                 if not self.object_tracker.is_customer_a_past_customer(track_id):
                     self.perform_analysis(box, track_id, prev_position, cls, original_frame)
 
-            # Annotate all objects in blue
-            annotate_object(track_id, cls, box, self.object_tracker.age_classifier.data.get(track_id, "Not Detected"),
-                            self.object_tracker.age_classifier.data.get(track_id, "Not Detected"), self.annotator,
-                            BLUE)
+            # Annotate all objects in BLUE
+            annotate_object(track_id, cls, box,
+                            self.object_tracker.get_track_id_classifier_data(track_id, ClassifierType.AGE),
+                            self.object_tracker.get_track_id_classifier_data(track_id, ClassifierType.GENDER),
+                            self.annotator, BLUE)
 
-            # Add annotation exclusively to the clients of the store - red.
             if track_id in self.object_tracker.counted_ids:
+
+                # Only clients are annotated in RED
                 annotate_object(track_id, cls, box,
-                                self.object_tracker.age_classifier.data.get(track_id, "Not Detected"),
-                                self.object_tracker.age_classifier.data.get(track_id, "Not Detected"), self.annotator,
-                                RED)
+                                self.object_tracker.get_track_id_classifier_data(track_id, ClassifierType.AGE),
+                                self.object_tracker.get_track_id_classifier_data(track_id, ClassifierType.GENDER),
+                                self.annotator, RED)
+
+                # If its re-evaluating time
                 if current_timeslice_frame_count % REEVALUATION_INTERVAL == 0:
                     self.object_tracker.reevaluate_classification(original_frame, track_id, box)
 
