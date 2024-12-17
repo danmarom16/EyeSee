@@ -59,13 +59,13 @@ class FrameAnalyzer:
                             self.object_tracker.get_track_id_classifier_data(track_id, ClassifierType.GENDER),
                             self.annotator, color)
 
-            # Display counts on the frame if a region is defined
-            if self.region is not None:
-                self.object_tracker.display_counts(im0, self.annotator)
+        # Display counts on the frame if a region is defined
+        if self.region is not None:
+            self.object_tracker.display_counts(im0, self.annotator)
 
-            if self.object_tracker.track_data.id is not None:
-                heatmap_copy = self.heatmap_manager.normalize_heatmap(heatmap_copy)
-                im0 = self.heatmap_manager.normalize_heatmap(im0)
+        if self.object_tracker.track_data.id is not None:
+            heatmap_copy = self.heatmap_manager.normalize_heatmap(heatmap_copy)
+            im0 = self.heatmap_manager.normalize_heatmap(im0)
 
         self.object_tracker.save_prev_ids()
         return im0, heatmap_copy
@@ -99,7 +99,7 @@ class FrameAnalyzer:
                 if not self.object_tracker.is_customer_a_past_customer(track_id):
                     self.perform_analysis(box, track_id, prev_position, cls, original_frame)
 
-            # From this line and on, the ID may be popped out of all data structures. Therefore we don't use the
+            # From this line and on, the ID may be popped out of all data structures. Therefor we don't use the
             # present client ID because this ID may not have entry there, which will make the program collapse.
             # Instead, we verify it with counted IDs array.
             color = RED if track_id not in  self.object_tracker.counted_ids else GREEN

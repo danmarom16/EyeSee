@@ -47,7 +47,7 @@ class ObjectCounter:
         if self.model.names[cls] not in self.classwise_counts:
             self.classwise_counts[self.model.names[cls]] = {CountType.CLEAN_IN.value: 0, CountType.DIRTY_IN.value: 0,
                                                             CountType.CLEAN_OUT.value: 0, CountType.DIRTY_OUT.value: 0}
-            self.classwise_counts[self.model.names[cls]][CountType.CLEAN_IN.value] += 1
+        self.classwise_counts[self.model.names[cls]][CountType.CLEAN_IN.value] += 1
         self.store_classwise_counts(cls)
 
     def count_out(self, cls):
@@ -55,7 +55,7 @@ class ObjectCounter:
         self.classwise_counts[self.model.names[cls]][CountType.CLEAN_OUT.value] += 1
 
     def count_dirty_entrance(self, cls=0):
-        self.classwise_counts[self.model.names[cls]][CountType.CLEAN_IN.value] += 1
+        self.classwise_counts[self.model.names[cls]][CountType.DIRTY_IN.value] += 1
 
     def count_dirty_and_dirty_exit(self, cls=0):
         self.dirty_out_count += 1

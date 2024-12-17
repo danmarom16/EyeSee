@@ -7,6 +7,7 @@ from classifiers.gender_classifier import GenderClassifier
 
 class ObjectTracker:
 
+    #TODO:Add support in past_dirty_ids -> the tracker acount flap in dirty IDS as new dirty ID. Need to add mechanism for detecting previous dirty IDs
     def __init__(self, object_counter, video_manager, model, CFG):
 
         # YOLO Model that will be used in order to track customers.
@@ -186,7 +187,7 @@ class ObjectTracker:
         # If the ID performed a "dirty enter", its no longer dirty.
         if track_id is self.dirty_ids:
             self.dirty_ids.remove(track_id)
-            self.object_counter.decrement_count(CountType.DIRTY_IN)
+            self.object_counter.decrement_count(CountType.DIRTY_IN.value)
             LOGGER.info(f"ID: {track_id} Removed from dirty list")
 
         # Dwell time initialization for a new client
