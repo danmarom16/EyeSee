@@ -1,4 +1,4 @@
-from base_classifier import BaseClassifier
+from classifiers.base_classifier import BaseClassifier
 from util1 import WeightsPath
 
 

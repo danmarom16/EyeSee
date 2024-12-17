@@ -9,31 +9,61 @@ class ObjectTracker:
 
     def __init__(self, object_counter, video_manager, model, CFG):
 
+        # YOLO Model that will be used in order to track customers.
         self.model = model
+
+        # Configuration structure.
         self.CFG = CFG
 
-        # Custom Object for handling logic.
+        # Video Manager - will be responsible to handle all metadata regarding the video.
         self.video_manager = video_manager
+
+        # Object Counter - its responsibility is to handle the counting logic in the program.
         self.object_counter = object_counter
 
-        # Classifiers
+        # Classifiers for demographic analysis.
         self.age_classifier = AgeClassifier()
         self.gender_classifier = GenderClassifier()
 
-        # Track related data structures
+        # Track the history of each detected ID (up to 30 frames).
         self.track_history = defaultdict(list)
+
+        # Holds the raw tracking info fo each detection.
         self.tracks = None
+
+        # Holds the boxes of each track object.
         self.track_data = None
+
+        # Holds the unique ids detected in the current frame.
         self.track_ids = None
+
+        # Holds the classes of each detection.
         self.clss = None
+
+        # Holds the boxes for each detection.
         self.boxes = None
+
+        # ID Structures that will help with recognizing new customers.
+        # Clients from previous frame.
         self.prev_track_ids = None
+
+        # Dirty IDs - Clients who entered the frame not through the entrance line.
         self.dirty_ids = []
+
+        # Counted IDs - representing the real clients in the store who entered cleanly through the entrance.
         self.counted_ids = []
-        self.dwell_times = None
-        self.present_clients = None
-        self.past_customers = None
-        self.past_customers_in_timeslice = None
+
+        # Data structure that assign each client all the information needed to count his dwell time in the store.
+        self.dwell_times = defaultdict()
+
+        # Boolean array that is used to distinguish between dirty clients and real clients.
+        self.present_clients = defaultdict()
+
+        # Past customers - global array that won't be reset until the termination of the program.
+        self.past_customers = []
+
+        # Past customers in current timeslice - will be reseated with each new timeslice.
+        self.past_customers_in_timeslice = []
 
 
     def extract_tracks(self, im0):
@@ -48,6 +78,13 @@ class ObjectTracker:
             self.boxes = self.track_data.xyxy.cpu()
             self.clss = self.track_data.cls.cpu().tolist()
             self.track_ids = self.track_data.id.int().cpu().tolist()
+
+            # Still don't know if this person is dirty or not, but he is present in the frame. This will be determined
+            # later on.
+            for track_id in self.track_ids:
+                if track_id not in self.present_clients:
+                    self.present_clients[track_id] = False
+
         else:
             LOGGER.warning("WARNING ⚠️ no tracks found!")
             self.boxes, self.clss, self.track_ids = [], [], []
@@ -78,13 +115,15 @@ class ObjectTracker:
 
             # Else this is a client that was entered the video "dirty" and exiting "dirty".
             else:
-                self.object_counter.count_not_client_dirty_exit(track_id, self.dirty_ids)
+                self.dirty_ids.remove(track_id)
+                self.object_counter.count_dirty_and_dirty_exit()
 
     def pop_from_data_structures(self, track_id):
         self.dwell_times.pop(track_id, None)
         self.age_classifier.remove_id(track_id)
         self.gender_classifier.remove_id(track_id)
         self.counted_ids.remove(track_id)
+        self.present_clients.pop(track_id, None)
 
     def store_tracking_history(self, track_id, box):
         self.track_line = self.track_history[track_id]
@@ -95,48 +134,54 @@ class ObjectTracker:
     def close_dwell_time(self, track_id):
 
         # Set exit to the current time.
-        self.dwell_times[track_id][DwellTime.EXIT] = self.video_manager.get_current_time()
+        self.dwell_times[track_id][DwellTime.EXIT.value] = self.video_manager.get_current_time()
 
         # Calculate dwell time
-        self.dwell_times[track_id][DwellTime.DWELL] = (self.dwell_times[track_id][DwellTime.EXIT] -
-                                               self.dwell_times[track_id][DwellTime.ENTRANCE])
+        self.dwell_times[track_id][DwellTime.DWELL.value] = (self.dwell_times[track_id][DwellTime.EXIT.value] -
+                                               self.dwell_times[track_id][DwellTime.ENTRANCE.value])
 
         # Mark as a clean exit, as only clean exit clients will be called with this function.
-        self.dwell_times[track_id][DwellTime.EXIT_TYPE] = ExitType.CLEAN
+        self.dwell_times[track_id][DwellTime.EXIT_TYPE.value] = ExitType.CLEAN.value
 
     def add_to_past_customers(self, track_id):
         # Add customers to past customer as it left the frame.
         self.past_customers_in_timeslice.append({
-            PastCustomer.TRACK_ID: track_id,
-            PastCustomer.DWELL: self.dwell_times[track_id],
-            PastCustomer.AGE: self.age_classifier.data[track_id],
-            PastCustomer.GENDER: self.gender_classifier.data[track_id],
+            PastCustomer.TRACK_ID.value: track_id,
+            PastCustomer.DWELL.value: self.dwell_times[track_id],
+            PastCustomer.AGE.value: self.age_classifier.data[track_id],
+            PastCustomer.GENDER.value: self.gender_classifier.data[track_id],
         })
 
         self.past_customers.append({
-            PastCustomer.TRACK_ID: track_id,
-            PastCustomer.DWELL: self.dwell_times[track_id],
-            PastCustomer.AGE: self.age_classifier.data[track_id],
-            PastCustomer.GENDER: self.gender_classifier.data[track_id],
+            PastCustomer.TRACK_ID.value: track_id,
+            PastCustomer.DWELL.value: self.dwell_times[track_id],
+            PastCustomer.AGE.value: self.age_classifier.data[track_id],
+            PastCustomer.GENDER.value: self.gender_classifier.data[track_id],
         })
 
     def get_prev_position(self, track_id):
         return self.track_history[track_id][-2]
 
     def is_customer_a_past_customer(self, track_id):
-        return any(customer['track_id' == track_id] for customer in self.past_customers)
+        return any(customer['track_id'] == track_id for customer in self.past_customers)
 
     def is_object_has_history(self, track_id):
         return len(self.track_history[track_id]) > 1
 
-    def count_in(self, track_id, cls):
+    def add_new_client(self, frame, track_id, cls, box):
 
-        # If this is a new ID, count it in
-        if track_id not in self.counted_ids:
-            self.counted_ids.append(track_id)
-            LOGGER.info(f"ID: {track_id} Clean Enter")
-            self.present_clients[track_id] = True
-            self.object_counter.count_in(track_id, cls, self.dwell_times)
+        # Add to counted IDs
+        self.counted_ids.append(track_id)
+        LOGGER.info(f"ID: {track_id} Clean Enter")
+
+        # Mark it as client in the boolean array.
+        self.present_clients[track_id] = True
+
+        # Call object counter to count it in.
+        self.object_counter.count_in(cls)
+
+        # Run classification on a new client.
+        self.classify(frame, track_id, box)
 
         # If the ID performed a "dirty enter", its no longer dirty.
         if track_id is self.dirty_ids:
@@ -145,18 +190,22 @@ class ObjectTracker:
             LOGGER.info(f"ID: {track_id} Removed from dirty list")
 
         # Dwell time initialization for a new client
-        self.dwell_times[track_id] = {DwellTime.ENTRANCE: None, DwellTime.EXIT: None,
-                                      DwellTime.DWELL: None, DwellTime.EXIT_TYPE: None}
-        self.dwell_times[track_id][DwellTime.ENTRANCE_TYPE] = EntranceType.CLEAN
+        self.dwell_times[track_id] = {DwellTime.ENTRANCE.value: None, DwellTime.EXIT.value: None,
+                                      DwellTime.DWELL.value: None, DwellTime.EXIT_TYPE.value: None}
+        self.dwell_times[track_id][DwellTime.ENTRANCE_TYPE.value] = EntranceType.CLEAN.value
+        self.dwell_times[track_id][DwellTime.ENTRANCE.value] = self.video_manager.get_current_time()
 
-    def count_out(self, track_id, cls):
+    def is_current_customer(self, track_id):
+        return self.present_clients[track_id]
+
+    def remove_client(self, track_id, cls):
 
         # Track_id is a present client and not dirty:
         if track_id in self.counted_ids:
             if track_id not in self.dirty_ids:
-                LOGGER.into(f"ID: {track_id} clean exit")
+                LOGGER.info(f"ID: {track_id} clean exit")
                 self.present_clients[track_id] = False
-                self.object_counter.count_out(track_id, cls)
+                self.object_counter.count_out(cls)
 
                 # Close dwell time.
                 if track_id in self.dwell_times:
@@ -164,26 +213,31 @@ class ObjectTracker:
                     self.add_to_past_customers(track_id)
                     self.pop_from_data_structures(track_id)
 
+    def count_dirty_id(self, track_id, cls):
+        self.object_counter.count_dirty_entrance(cls)
+        self.dirty_ids.append(track_id)
 
     def classify(self, im0, track_id, box):
         LOGGER.info("Classifying object")
-        self.age_classifier.classify(im0, track_id, box)
-        self.gender_classifier.classify(im0, track_id, box)
+        self.age_classifier.classify(im0, track_id, box, ClassifierType.AGE.value)
+        self.gender_classifier.classify(im0, track_id, box, ClassifierType.GENDER.value)
 
     def reevaluate_classification(self, im0, track_id, box):
-        LOGGER.info("Re-evaluating low confidence classification")
         age_conf = self.age_classifier.get_track_id_conf(track_id)
         gender_conf = self.gender_classifier.get_track_id_conf(track_id)
 
         if age_conf != "Not Detected" and age_conf < LOW_CONF:
-            self.age_classifier.classify(im0, track_id, box)
+            LOGGER.info(f"ID: {track_id} has low confidence age prediction of: {age_conf}."
+                        f"Triggering classification again.")
+            self.age_classifier.classify(im0, track_id, box, ClassifierType.AGE.value)
         if gender_conf != "Not Detected" and gender_conf < LOW_CONF:
-            self.gender_classifier.classify(im0, track_id, box)
+            LOGGER.info(f"ID: {track_id} has low confidence gender prediction of: {gender_conf}."
+                        f"Triggering classification again.")
+            self.gender_classifier.classify(im0, track_id, box, ClassifierType.GENDER.value)
 
     def display_counts(self, im0, annotator):
         labels_dict = self.object_counter.display_counts()
-        if labels_dict:
-            annotator.display_analytics(im0, labels_dict, (104, 31, 17), (255, 255, 255), 10)
+        annotator.display_analytics(im0, labels_dict, (104, 31, 17), (255, 255, 255), 10)
 
     def set_prev_track_ids(self, current_ids):
         self.prev_track_ids = current_ids.copy()
@@ -200,9 +254,14 @@ class ObjectTracker:
     def get_classes(self):
         return self.clss
 
-    def get_track_id_classifier_data(self, classifier_type, track_id):
+    def get_track_id_classifier_data(self, track_id, classifier_type):
         if classifier_type == ClassifierType.AGE:
             return self.age_classifier.get_track_id_data(track_id)
         else:
             return self.gender_classifier.get_track_id_data(track_id)
 
+    def save_prev_ids(self):
+        self.prev_track_ids = self.counted_ids.copy()
+
+    def calculate_current_count(self):
+        return self.object_counter.calculate_current_count()

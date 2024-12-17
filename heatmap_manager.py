@@ -4,14 +4,19 @@ import cv2
 class HeatmapManager:
 
     def __init__(self, CFG):
+
+        # Will store heatmap values.
         self.heatmap = None
+
+        # Configuration file.
         self.CFG = CFG
-        self.initialized = False
+
+        # Colormap of the heatmap.
         self.colormap = cv2.COLORMAP_PARULA if self.CFG["colormap"] is None else self.CFG["colormap"]
+
     def initialize_heatmap(self, frame):
-        if not self.initialized:
-            self.heatmap = np.zeros_like(frame, dtype=np.float32)
-            self.initialized = True
+        self.heatmap = np.zeros_like(frame, dtype=np.float32)
+
 
     def apply_heatmap_effect(self, box):
         x0, y0, x1, y1 = map(int, box)
@@ -40,8 +45,5 @@ class HeatmapManager:
             0,
         )
 
-    def overlay_heatmap(self, frame, colormap):
-        # Logic for normalizing and overlaying the heatmap
-        return self.normalize_heatmap(frame, self.heatmap, colormap)
 
 

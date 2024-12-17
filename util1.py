@@ -3,11 +3,13 @@ This module defines reusable constants and enumerations for tracking
 and analysis operations in the project.
 """
 import os
+from datetime import datetime
 from enum import Enum
 import cv2
 import numpy as np
 import logging
 import csv
+
 
 # ENUMS
 class ExitType(Enum):
@@ -53,9 +55,15 @@ class DwellTime(Enum):
     ENTRANCE_TYPE = "entrance_type"
     EXIT_TYPE = "exit_type"
 
+
 class ClassifierType(Enum):
     AGE = "age"
     GENDER = "gender"
+
+
+class HeatmapType(Enum):
+    ANNOTATED = "annotated"
+    CLEAN = "clean"
 
 
 # CONSTANTS
@@ -64,8 +72,8 @@ LOW_CONF = 0.75  # Confidence threshold for predictions.
 SAVING_INTERVAL = 5  # Number of frames between saving data.
 NOT_DETECTED = "Not Detected"
 
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
+RED = (0, 0, 255)
+GREEN = (0, 255, 0)
 PURPLE = (104, 9, 123)
 
 SERVER_URL = 'http://127.0.0.1:4000'
@@ -74,10 +82,11 @@ REPORT_ENDPOINT = '/report/create'
 HEATMAP_ADD = '/heatmap/add'
 
 ROW_TITLES = ["date", "timeSlice", "totalCustomers", "totalMaleCustomers", "totalFemaleCustomers",
-                 "avgDwellTime", "customersByAge"]
+              "avgDwellTime", "customersByAge"]
 
-CSV_PATH = "./logs/files/aggregated_data.csv"
-TXT_PATH = "./logs/files/aggregated_data.txt"
+CSV_PATH = "/aggregated_data.csv"
+TXT_PATH = "/aggregated_data.txt"
+OUTPUT_VID_PATH = "/output.mp4"
 
 
 def normalize_heatmap(im0, heatmap, colormap):
@@ -140,24 +149,17 @@ def init_writer(path, video_manager):
     )
 
 
-def get_logger():
-    return logging.basicConfig(
-        filename='./logs/id_log.txt',  # Log file name
-        level=logging.INFO,  # Log level
-        format='%(message)s'  # Log format
-    )
-
-
 # Create the CSV file and write the header if it doesn't exist
-def open_csv_file(path=CSV_PATH):
+def open_csv_file(base_dir):
+    path = base_dir + "/" + CSV_PATH
     if not os.path.exists(path):
         with open(path, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(ROW_TITLES)
 
 
-
-def export_to_local_csv(reports, path=CSV_PATH):
+def export_to_local_csv(reports, base_dir):
+    path = base_dir + "/" + CSV_PATH
     with open(path, mode='a', newline='') as file:
         writer = csv.writer(file)
         for report in reports:
@@ -172,7 +174,8 @@ def export_to_local_csv(reports, path=CSV_PATH):
             ])
 
 
-def export_to_local_txt(reports, path=TXT_PATH):
+def export_to_local_txt(reports, base_dir):
+    path = base_dir + "/" + TXT_PATH
     with open(path + ".txt", mode='a', encoding='utf-8') as file:
         for report in reports:
             line = "\t".join([
@@ -185,3 +188,17 @@ def export_to_local_txt(reports, path=TXT_PATH):
                 str(report["customersByAge"])
             ])
             file.write(line + "\n")
+
+
+def make_dirs():
+    current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+    base_dir = f"./logs/{current_time}"
+    dirs = [f"{base_dir}/classifications/gender/female", f"{base_dir}/classifications/gender/male",
+            f"{base_dir}/classifications/age/adult", f"{base_dir}/classifications/age/children",
+            f"{base_dir}/classifications/age/elder", f"{base_dir}/classifications/age/young",
+            f"{base_dir}/files", f"{base_dir}/outputs", f"{base_dir}/heatmaps_snapshots"]
+
+    for directory in dirs:
+        os.makedirs(directory, exist_ok=True)
+
+    return base_dir
