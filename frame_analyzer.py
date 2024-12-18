@@ -1,8 +1,7 @@
-from shapely.geometry import LineString
-from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_SOL_DICT, LOGGER
+from ultralytics.utils import LOGGER
 from ultralytics.utils.plotting import Annotator
 from shapely.geometry import LineString
-from util1 import annotate_object, RED, GREEN, PURPLE, REEVALUATION_INTERVAL, ClassifierType
+from util import annotate_object, RED, GREEN, PURPLE, REEVALUATION_INTERVAL, ClassifierType
 
 class FrameAnalyzer:
 
@@ -145,6 +144,11 @@ class FrameAnalyzer:
                 self.object_tracker.remove_client(track_id, cls)
 
         else:
-            if not self.object_tracker.is_current_customer(track_id) and track_id not in self.object_tracker.dirty_ids:
+
+            # If object is not already customer, and not already in dirty IDs, and do not have recent history recoreded,
+            # by the tracker, it is a new dirty entrance ID. The recent history part was added because of flapps the
+            # detector has when it misses object for 1-2 frames and then re-track it.
+            if (not self.object_tracker.is_current_customer(track_id) and track_id not in self.object_tracker.dirty_ids
+                    and track_id not in self.object_tracker.track_data):
                 LOGGER.info(f"ID: {track_id}, Dirty Entrance")
                 self.object_tracker.count_dirty_id(track_id, cls)

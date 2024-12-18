@@ -1,11 +1,9 @@
-from collections import defaultdict
+from util import ExitType, CountType, DwellTime
 
-from util1 import ExitType, CountType, DwellTime
-from ultralytics.utils import LOGGER
 
 class ObjectCounter:
 
-    def __init__(self, model, video_manager, CFG):
+    def __init__(self, model, video_manager):
 
         self.model = model
 
@@ -34,13 +32,12 @@ class ObjectCounter:
 
         dwell_times[track_id][DwellTime.EXIT.value] = self.video_manager.get_current_time()
         dwell_times[track_id][DwellTime.DWELL.value] = (dwell_times[track_id][DwellTime.EXIT.value] -
-                                                  dwell_times[track_id][DwellTime.ENTRANCE.value])
+                                                        dwell_times[track_id][DwellTime.ENTRANCE.value])
         dwell_times[track_id][DwellTime.EXIT_TYPE.value] = ExitType.DIRTY.value
 
         self.dirty_out_count += 1
         self.classwise_counts[self.model.names[cls]][CountType.DIRTY_OUT.value] += 1
         self.in_count -= 1
-
 
     def count_in(self, cls):
         self.in_count += 1

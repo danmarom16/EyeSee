@@ -2,7 +2,7 @@ import random
 from collections import defaultdict
 
 from ultralytics import YOLO
-from util1 import box_to_image
+from util import box_to_image
 
 
 class BaseClassifier:

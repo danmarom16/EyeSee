@@ -1,7 +1,7 @@
-from data_provider1 import DataProvider
+from data_provider import DataProvider
 from cloudinary_service import CloudinaryService
-from video_analyzer1 import VideoAnalyzer
-from util1 import WeightsPath
+from video_analyzer import VideoAnalyzer
+from util import WeightsPath
 from video_manager import VideoManager
 
 

@@ -4,9 +4,9 @@ import cloudinary
 from cloudinary import CloudinaryImage
 import cloudinary.uploader
 import cloudinary.api
-import numpy as np
 from ultralytics.utils import LOGGER
 import cv2
+from util import DOWNLOADED_VID_PATH
 
 config = cloudinary.config(secure=True)
 
@@ -36,7 +36,9 @@ class CloudinaryService:
 
         return srcURL
 
-    def download_video(self, url, save_path="downloaded_video.mp4"):
+    def download_video(self, url, base_dir):
+
+        save_path = base_dir + "/" + DOWNLOADED_VID_PATH
         # Fetch video from URL
         response = requests.get(url, stream=True)
         if response.status_code == 200:

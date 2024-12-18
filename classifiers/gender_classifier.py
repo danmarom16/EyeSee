@@ -1,5 +1,5 @@
 from classifiers.base_classifier import BaseClassifier
-from util1 import WeightsPath
+from util import WeightsPath
 
 
 class GenderClassifier(BaseClassifier):

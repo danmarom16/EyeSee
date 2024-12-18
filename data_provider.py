@@ -1,193 +1,136 @@
-import csv
-import os
-import base64
 import requests
 from PIL import Image, PngImagePlugin
 import cv2
-import numpy as np
-from datetime import datetime
+from ultralytics.utils import LOGGER
 
-SERVER_URL = 'http://127.0.0.1:4000'
-HEATMAP_ENDPOINT = '/heatmap'
-REPORT_ENDPOINT = '/report/create'
-HEATMAP_ADD = '/heatmap/add'
+from util import (SERVER_URL, REPORT_ENDPOINT, HeatmapType, DwellTime, make_dirs,
+                  open_csv_file, export_to_local_csv, export_to_local_txt)
+
 
 class DataProvider:
-    def __init__(self, cloudinary_service, video_collector,file_path="./logs/files/aggregated_data.csv"):
-        self.video_collector = video_collector
-        self.file_path = file_path
-        self.cloudinary_service = cloudinary_service
-        # Create the CSV file and write the header if it doesn't exist
-        if not os.path.exists(self.file_path):
-            with open(self.file_path, mode='w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow(
-                    ["date", "timeSlice", "totalCustomers", "totalMaleCustomers", "totalFemaleCustomers",
-                     "avgDwellTime", "customersByAge"])
+    def __init__(self, cloudinary_service, video_manager):
+
+        # Local saved reports to be sent to server.
         self.reports = []
-        self.heatmap_snapshots = []
-        self.start_time = None
 
+        # Video manager who will be responsible to provide the data provider with metadata regarding the video.
+        self.video_manager = video_manager
 
-    def local_save_metrics(self, count, ages, dwell_times, genders, start_time, past_customers, end_time):
+        # Cloudinary service that is in use to upload and download videos and images to a remote cloud.
+        self.cloudinary_service = cloudinary_service
 
-        young = 0
-        children = 0
-        adult = 0
-        elder = 0
-        male = 0
-        female = 0
+        # Initialize base directory for further created outputs of the program.
+        self.base_dir = make_dirs()
+
+        # Open CSV file.
+        open_csv_file(self.base_dir)
+
+    def local_save_metrics(self, count, ages, dwell_times, genders, past_customers):
+
+        date = self.video_manager.get_date()
+        start_time = self.video_manager.get_current_timeslice_start()
+        end_time = self.video_manager.get_current_time()
+
+        # Initialize counters
+        age_groups = {"young": 0, "children": 0, "adult": 0, "elder": 0}
+        gender_counts = {"male": 0, "female": 0}
         total_dwell = 0
 
+        # Process past customers
         for customer in past_customers:
-            age = customer["age"][0]
-            gender = customer["gender"][0]
+            age, gender = customer["age"][0], customer["gender"][0]
             total_dwell += customer["dwell"]["dwell"].total_seconds()
 
-            if gender == "male":
-                male += 1
-                if age == "adult":
-                    adult += 1
-                elif age == "elder":
-                    elder += 1
-                elif age == "young":
-                    young += 1
-                else:
-                    children += 1
+            # Increment gender and age group counts
+            gender_counts[gender] += 1
+            age_groups[age] += 1
 
-            if gender == "female":
-                female += 1
-                if age == "adult":
-                    adult += 1
-                elif age == "elder":
-                    elder += 1
-                elif age == "young":
-                    young += 1
-                else:
-                    children += 1
-
+        # Process current customers from `ages` and `genders`
         for track_id in ages:
-            if ages[track_id][0] == "young":
-                young += 1
-            elif ages[track_id][0] == "children":
-                children += 1
-            elif ages[track_id][0] == "adult":
-                adult += 1
-            else:
-                elder += 1
+            age_groups[ages[track_id][0]] += 1
 
         for track_id in genders:
-            if genders[track_id][0] == "male":
-                male += 1
-            else:
-                female += 1
+            gender_counts[genders[track_id][0]] += 1
 
-        # All customers that are present in dwell times are currently in store.
-        # Therefor there dwell time is ongoing and will be calculated with the current time - entrance time for each.
-        for track_id in dwell_times:
-            total_dwell += (end_time - dwell_times[track_id]["entrance"]).total_seconds()
+        # Calculate dwell times for ongoing customers
+        total_dwell += sum(
+            (end_time - dwell_times[track_id][DwellTime.ENTRANCE.value]).total_seconds()
+            for track_id in dwell_times
+        )
 
-        if count == 0 or total_dwell == 0:
-            avg_dwell_time = 0
-        else:
-            avg_dwell_time = total_dwell / count
+        # Calculate average dwell time
+        avg_dwell_time = total_dwell / count if count > 0 else 0
 
+        # Append the report
         self.reports.append({
-            "date": start_time.strftime("%Y-%m-%d"),
-            "timeSlice": start_time.strftime("%H-%M-%S") + "-" + end_time.strftime("%H-%M-%S"),
+            "date": date,
+            "timeSlice": f"{start_time.strftime('%H-%M-%S')}-{end_time.strftime('%H-%M-%S')}",
             "totalCustomers": count,
-            "totalMaleCustomers": male,
-            "totalFemaleCustomers": female,
+            "totalMaleCustomers": gender_counts["male"],
+            "totalFemaleCustomers": gender_counts["female"],
             "avgDwellTime": avg_dwell_time,
-            "customersByAge": {
-                "young": young,
-                "children": children,
-                "adult": adult,
-                "elder": elder,
-            }
+            "customersByAge": age_groups,
         })
 
-    def local_save(self, count, ages, dwell_times, genders, start_time, past_customers):
-        end_time = self.video_collector.get_current_time()
-        self.local_save_metrics(count, ages, dwell_times, genders, start_time, past_customers, end_time)
+    def local_save_heatmap(self, frame, heatmap_type):
 
-    #TODO:Test this call.
-    def provide_metrics(self, url):
-        #For debugging
-        self.export_to_local_csv()
-        self.export_to_local_txt()
-        data = {"reports":self.reports, "jobId":self.video_collector.get_job_id()}
-        response = requests.post(url, json=data)
-        if response.status_code == 200:
-            print("Successfully saved data")
-        else:
-            print("Failed to save data")
-
-    def local_save_heatmap(self, frame):
         # Convert OpenCV frame to PIL Image
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # Convert BGR (OpenCV) to RGB (PIL)
         pil_image = Image.fromarray(frame_rgb)
 
         # Add metadata to the image (PNG format for text metadata)
         metadata = PngImagePlugin.PngInfo()
-        valid_saving_start_time = self.video_collector.get_start_time().strftime("%Y-%m-%d_%H-%M-%S")
-        valid_saving_end_time = self.video_collector.get_end_time().strftime("%Y-%m-%d_%H-%M-%S")
+        valid_saving_start_time = self.video_manager.get_analysis_start_time().strftime("%Y-%m-%d_%H-%M-%S")
+        valid_saving_end_time = self.video_manager.get_current_time().strftime("%Y-%m-%d_%H-%M-%S")
 
         metadata.add_text("Start Time", valid_saving_start_time)
         metadata.add_text("End Time", valid_saving_end_time)
 
         # Save the frame with metadata
-        image_path = "./logs/heatmaps_snapshots/" + valid_saving_start_time + "_" + valid_saving_end_time + "_heatmap.png"  # Customize the path as needed
+        image_path = (f"{self.base_dir}/heatmaps_snapshots/" + valid_saving_start_time + "_" + valid_saving_end_time +
+                      heatmap_type + "_heatmap.png")  # Customize the path as needed
         pil_image.save(image_path, "PNG", pnginfo=metadata)
-        return image_path, valid_saving_start_time + "_" + valid_saving_end_time
+        return image_path, heatmap_type + valid_saving_start_time + "_" + valid_saving_end_time
 
-    def provide_heatmap(self, url, frame, end_time):
-        image_path, public_image_id = self.local_save_heatmap(frame)
+
+    def provide_heatmap(self, annotated_heatmap, clean_heatmap):
+
+        # Save annotated frame
+        self.local_save_heatmap(annotated_heatmap, HeatmapType.ANNOTATED.value)
+        image_path, public_image_id = self.local_save_heatmap(clean_heatmap, HeatmapType.CLEAN.value)
         url = self.cloudinary_service.upload_heatmap(image_path, public_image_id)
         print("****2. Upload an image****\nDelivery URL: ", url, "\n")
 
-    def export_to_local_csv(self):
-        with open(self.file_path, mode='a', newline='') as file:
-            writer = csv.writer(file)
-            for report in self.reports:
-                writer.writerow([
-                    report["date"],
-                    report["timeSlice"],
-                    report["totalCustomers"],
-                    report["totalMaleCustomers"],
-                    report["totalFemaleCustomers"],
-                    report["avgDwellTime"],
-                    report["customersByAge"]
-                ])
+    def provide_metrics(self, url):
 
-    def export_to_local_txt(self):
-        with open(self.file_path + ".txt", mode='a', encoding='utf-8') as file:
-            for report in self.reports:
-                line = "\t".join([
-                    str(report["date"]),
-                    str(report["timeSlice"]),
-                    str(report["totalCustomers"]),
-                    str(report["totalMaleCustomers"]),
-                    str(report["totalFemaleCustomers"]),
-                    str(report["avgDwellTime"]),
-                    str(report["customersByAge"])
-                ])
-                file.write(line + "\n")
+        # Export outputs locally for internal debugging of the application.
+        export_to_local_csv(self.reports, self.base_dir)
+        export_to_local_txt(self.reports, self.base_dir)
 
-    def provide(self, last_frame):
-        end_time = self.video_collector.get_current_time()
+        # Data in the format that the server expect
+        data = {"reports": self.reports, "jobId": self.video_manager.get_job_id()}
+        response = requests.post(url, json=data)
+
+        # Handle response
+        if response.status_code == 200:
+            LOGGER.info("Successfully saved data")
+        else:
+            LOGGER.info("Failed to save data")
+
+    def local_save(self, count, ages, dwell_times, genders, past_customers):
+        self.local_save_metrics(count, ages, dwell_times, genders, past_customers)
+
+    def provide(self, annotated_heatmap, clean_heatmap):
         self.provide_metrics(SERVER_URL + REPORT_ENDPOINT)
-        self.provide_heatmap(SERVER_URL + HEATMAP_ENDPOINT, last_frame, end_time)
-
-    def set_start_time(self, start_time):
-        self.start_time = start_time
+        self.provide_heatmap(annotated_heatmap, clean_heatmap)
 
     def download_video(self, url):
         try:
-            return self.cloudinary_service.download_video(url)
+
+            # Calling cloudinary service to download the video.
+            return self.cloudinary_service.download_video(url, self.base_dir)
+
+        # Raise exception if there was some issue with video download by the service.
         except Exception as e:
             print(e)
             raise
-
-    def populate_video_data(self, video, data):
-        self.video_collector.populate_video_data(video, data)

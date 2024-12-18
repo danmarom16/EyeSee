@@ -1,5 +1,5 @@
 from collections import defaultdict
-from util1 import ExitType, EntranceType, PastCustomer, DwellTime, CountType, ClassifierType, LOW_CONF
+from util import ExitType, EntranceType, PastCustomer, DwellTime, CountType, ClassifierType, LOW_CONF
 from ultralytics.utils import LOGGER
 from classifiers.age_classifier import AgeClassifier
 from classifiers.gender_classifier import GenderClassifier
